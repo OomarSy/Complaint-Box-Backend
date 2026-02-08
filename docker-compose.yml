@@ -1,0 +1,81 @@
+services:
+  complaint-box:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      DB_USERNAME: $DB_USERNAME
+      DB_PASS: $DB_PASS
+      DB_HOST: $DB_HOST
+      DB_NAME: $DB_NAME
+      HOST: $HOST
+      DEBUG: $DEBUG
+      ENVIRONMENT: $ENVIRONMENT
+      DJANGO_SUPERUSER_USERNAME: $DJANGO_SUPERUSER_USERNAME
+      DJANGO_SUPERUSER_EMAIL: $DJANGO_SUPERUSER_EMAIL
+      DJANGO_SUPERUSER_PASSWORD: $DJANGO_SUPERUSER_PASSWORD
+    networks:
+      - default
+      - traefik_default
+    volumes:
+      - media_volume:/code/media
+      - /home/administrator/docker-server/complaint-box/logs-${ENVIRONMENT}:/code/log
+    expose:
+      - 8080
+    labels:
+      - traefik.enable=true
+      - traefik.docker.network=traefik_default
+      - traefik.http.routers.complaint-box-$ENVIRONMENT.rule=Host(`$HOST`)
+      - traefik.http.routers.complaint-box-$ENVIRONMENT.service=complaint-box-$ENVIRONMENT
+      - traefik.http.routers.complaint-box-$ENVIRONMENT.tls=true
+      - traefik.http.routers.complaint-box-$ENVIRONMENT.tls.certresolver=letsencrypt
+      - traefik.http.routers.complaint-box-$ENVIRONMENT.entrypoints=https
+      - traefik.http.services.complaint-box-$ENVIRONMENT.loadbalancer.server.port=8080
+
+  complaint-box-db:
+    image: postgres:17.0
+    container_name: complaint-box-db-${DB_ENV}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_USER: $DB_USERNAME
+      POSTGRES_PASSWORD: $DB_PASS
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks:
+      - default
+
+  complaint-box-redis:
+    image: redis
+    restart: unless-stopped
+    networks:
+      - default
+    volumes:
+      - cache:/data
+
+  media-server:
+      image: nginx:alpine
+      volumes:
+        - media_volume:/usr/share/nginx/html/media:ro
+      networks:
+        - traefik_default
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.media-complaint-box-$ENVIRONMENT.rule=Host(`$HOST`) && PathPrefix(`/media/`)
+        - traefik.http.routers.media-complaint-box-$ENVIRONMENT.entrypoints=https
+        - traefik.http.routers.media-complaint-box-$ENVIRONMENT.tls=true
+        - traefik.http.routers.media-complaint-box-$ENVIRONMENT.tls.certresolver=letsencrypt
+        - traefik.http.routers.media-complaint-box-$ENVIRONMENT.service=media-$ENVIRONMENT
+        - traefik.http.services.media-complaint-box-$ENVIRONMENT.loadbalancer.server.port=80
+
+volumes:
+  db:
+  cache:
+  media_volume:
+  logs_volume:
+  
+networks:
+  default:
+  traefik_default:
+      external: true
