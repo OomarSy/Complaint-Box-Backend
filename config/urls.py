@@ -20,6 +20,8 @@ urlpatterns = [
     
     path('dashboard/', include(('apps.dashboard.urls.pages', 'dashboard'), namespace="dashboard")),
     
+    path('', include(('apps.complaint_box.urls.pages', 'complaint-box-dashboard'), namespace="complaint-box")),
+    
     path("admin/", admin.site.urls),
     
     path('', index, name="index"),
@@ -30,6 +32,9 @@ urlpatterns = [
     #Apps URLs
     path('users/', include(('apps.users.urls.pages', 'users'), namespace="users")),
     path('users/api/v1/', include(('apps.users.urls.api_v1', 'users-api-v1'), namespace="users-api-v1")),
+    
+    path('complaint-box/', include(('apps.complaint_box.urls.pages', 'complaint-box'), namespace="complaint-box")),
+    path('complaint-box/api/v1/', include(('apps.complaint_box.urls.api_v1', 'complaint-box-api-v1'), namespace="complaint-box-api-v1")),
     
     #media
     re_path(r'^media/(?P<path>.*)$',serve,{'document_root':settings.MEDIA_ROOT}),

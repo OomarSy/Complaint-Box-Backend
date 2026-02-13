@@ -1,0 +1,294 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>صندوق الشكاوى | احترافي</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+    <style>
+        :root {
+            --primary-bg: #16262E;
+            --card-bg: #2E4756;
+            --accent-color: #AAFCB8;
+            --input-bg: #D7FFF1;
+            --text-dark: #16262E;
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #1e3a47, #16262E);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* تحسين شكل البطاقة */
+        .card {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            background: rgba(46, 71, 86, 0.8);
+            backdrop-filter: blur(10px); /* تأثير الزجاج */
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .icon-box {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #3C7A89, #2E4756);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 22px;
+            font-size: 2.2rem;
+            margin: 0 auto 20px auto;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            animation: bounceIn 1s;
+        }
+
+        /* تحسين حقول الإدخال */
+        .form-control, .form-select {
+            background: var(--input-bg) !important;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 12px 15px;
+            transition: all 0.3s ease;
+            color: var(--text-dark) !important;
+        }
+
+        .form-control:focus, .form-select:focus {
+            box-shadow: 0 0 15px rgba(170, 252, 184, 0.3);
+            border-color: var(--accent-color);
+            transform: scale(1.01);
+        }
+
+        /* زر الإرسال */
+        .btn-submit {
+            background: var(--accent-color);
+            color: var(--text-dark);
+            font-weight: 800;
+            border: none;
+            border-radius: 12px;
+            padding: 15px;
+            letter-spacing: 0.5px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-submit:hover {
+            background: #90eaa5;
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(144, 234, 165, 0.4);
+        }
+
+        .btn-submit i {
+            transition: transform 0.3s ease;
+        }
+
+        .btn-submit:hover i {
+            transform: translateX(-5px) rotate(-15deg);
+        }
+
+        /* أنيميشن النجاح */
+        #animation-container {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 0;
+        }
+
+        .floating-label {
+            color: rgba(255,255,255,0.8);
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* تخصيص مظهر الـ Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--primary-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--card-bg); border-radius: 10px; }
+    </style>
+</head>
+
+<body>
+
+<div class="position-absolute top-0 start-0 p-3 d-flex gap-2">
+
+    {% if request.user.is_superuser %}
+        <a href="{% url 'dashboard:index' %}" 
+           class="btn btn-sm btn-warning rounded-pill px-3 shadow-sm">
+            <i class="bi bi-speedometer2 ms-1"></i>
+            لوحة التحكم
+        </a>
+    {% endif %}
+
+    <form method="post" action="{% url 'users:logout' %}">
+        {% csrf_token %}
+        <button type="submit" 
+                class="btn btn-sm btn-outline-light rounded-pill px-3 shadow-sm">
+            <i class="bi bi-box-arrow-right ms-1"></i>
+            تسجيل الخروج
+        </button>
+    </form>
+
+</div>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-5 col-md-8 animate__animated animate__fadeInUp">
+
+            <div class="card">
+                <div class="card-body p-4 p-md-5">
+
+                    <div class="text-center mb-4">
+                        <div class="icon-box animate__animated animate__zoomIn">
+                            <i class="bi bi-chat-left-dots-fill"></i>
+                        </div>
+                        <h3 class="fw-bold text-white mb-2">صندوق الشكاوى</h3>
+                        <p style="color: #AAFCB8; font-size: 0.9rem; opacity: 0.9;">
+                            نحن نهتم بخصوصيتك، جميع البيانات ترسل بهوية مجهولة
+                        </p>
+                    </div>
+
+                    <form id="complaint-form" class="animate__animated animate__fadeIn">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="floating-label small">عنوان الشكوى</label>
+                            <input type="text" class="form-control" name="title" 
+                                   placeholder="ما هو موضوع المشكلة؟" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="floating-label small">تصنيف الشكوى</label>
+                            <select class="form-select" name="reason" required>
+                                <option value="" selected disabled>اختر التصنيف المناسب</option>
+                                <option value="work_environment">بيئة العمل</option>
+                                <option value="management">الإدارة</option>
+                                <option value="salary">الرواتب والمكافآت</option>
+                                <option value="harassment">تحرش / إساءة</option>
+                                <option value="other">أخرى</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3 d-none animate__animated animate__fadeInDown" id="custom-reason-wrapper">
+                            <label class="floating-label small">حدد السبب بدقة</label>
+                            <input type="text" class="form-control" id="custom-reason-input" placeholder="اكتب السبب هنا">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="floating-label small">تفاصيل الشكوى</label>
+                            <textarea class="form-control" name="description" rows="4" 
+                                      placeholder="اشرح لنا المزيد حول ما يزعجك..." required></textarea>
+                        </div>
+
+                        <div class="d-grid mb-3">
+                            <button type="submit" class="btn btn-submit btn-lg shadow-sm">
+                                إرسال الشكوى الآن <i class="bi bi-send-fill ms-2"></i>
+                            </button>
+                        </div>
+
+                    </form>
+
+                    <div id="animation-container">
+                        <lottie-player
+                            id="success-animation"
+                            src="{% static 'lottie/inbox_success.json' %}"
+                            background="transparent"
+                            speed="1.2"
+                            style="width: 250px; height: 250px;">
+                        </lottie-player>
+                        <h4 class="text-white fw-bold animate__animated animate__bounceIn">شكراً لثقتك!</h4>
+                        <p class="text-accent animate__animated animate__fadeInUp" id="success-text" style="color: var(--accent-color)">
+                            تم استلام شكواك وسنقوم بمراجعتها فوراً.
+                        </p>
+                        <button class="btn btn-outline-light btn-sm mt-3" onclick="location.reload()">إرسال شكوى أخرى</button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    // نفس منطق الـ JavaScript الخاص بك مع تحسينات بسيطة للأنيميشن
+    const reasonSelect = document.querySelector("select[name='reason']");
+    const customReasonWrapper = document.getElementById("custom-reason-wrapper");
+    const customReasonInput = document.getElementById("custom-reason-input");
+
+    reasonSelect.addEventListener("change", function() {
+        if (this.value === "other") {
+            customReasonWrapper.classList.remove("d-none");
+            customReasonInput.required = true;
+        } else {
+            customReasonWrapper.classList.add("d-none");
+            customReasonInput.required = false;
+        }
+    });
+
+    document.getElementById("complaint-form").addEventListener("submit", function(e){
+        e.preventDefault();
+        const form = this;
+        
+        // محاكاة الإرسال لإظهار الأثر البصري
+        const submitBtn = form.querySelector('.btn-submit');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> جاري الإرسال...';
+
+        const formData = {
+            title: form.title.value,
+            reason: form.reason.value,
+            description: form.description.value,
+            extra_data: { custom_reason: customReasonInput.value }
+        };
+
+        fetch("{% url 'complaint-box-api-v1:complaint_create_api_v1' %}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": "{{ csrf_token }}",
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("API Error");
+            return response.json();
+        })
+        .then(data => {
+            form.classList.add('animate__animated', 'animate__fadeOut');
+            
+            setTimeout(() => {
+                form.style.display = "none";
+                const container = document.getElementById("animation-container");
+                container.style.display = "flex";
+                
+                const animation = document.getElementById("success-animation");
+                animation.play();
+            }, 500);
+        })
+        .catch(error => {
+            alert("عذراً، حدث خطأ. تأكد من الاتصال بالإنترنت.");
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = 'إرسال الشكوى الآن <i class="bi bi-send-fill ms-2"></i>';
+        });
+    });
+</script>
+
+</body>
+</html>

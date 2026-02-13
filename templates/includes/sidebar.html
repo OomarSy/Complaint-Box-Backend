@@ -5,9 +5,9 @@
 
         <!-- Brand -->
         <li class="nav-item mb-3 text-center">
-            <a href="{% url 'index' %}" class="nav-link d-flex flex-column align-items-center">
+            <a href="{% url 'complaint-box:complaint_box' %}" class="nav-link d-flex flex-column align-items-center">
                 <span class="sidebar-icon mb-2">
-                    <img src="{% static 'assets/img/brand/Compliant Box.png' %}" height="50" width="120" alt="Compliant Box Logo">
+                    <img src="{% static 'assets/img/brand/Compliant Box.png' %}" alt="Compliant Box Logo">
                 </span>
                 <span class="sidebar-text fw-bold fs-6">Control Management</span>
             </a>
@@ -29,35 +29,11 @@
             </a>
         </li>
 
-        <!-- Locations -->
-        <li class="nav-item {% if 'location' in segment %}active{% endif %}">
-            <a href="{% url 'location:employee_locations_page' %}" class="nav-link d-flex align-items-center px-3">
-                <i class="fas fa-map-marker-alt me-2"></i>
-                <span>{% trans "Locations" %}</span>
-            </a>
-        </li>
-
-        <!-- Attendance -->
-        <li class="nav-item {% if 'employeeattendance' in segment %}active{% endif %}">
-            <a href="{% url 'attendance:employeeattendance_list' %}" class="nav-link d-flex align-items-center px-3">
-                <i class="fas fa-calendar-check me-2"></i>
-                <span>{% trans "Attendance" %}</span>
-            </a>
-        </li>
-
-        <!-- Overtime -->
-        <li class="nav-item {% if 'employeeovertime' in segment %}active{% endif %}">
-            <a href="{% url 'overtime:employeeovertime_list' %}" class="nav-link d-flex align-items-center px-3">
-                <i class="fas fa-clock me-2"></i>
-                <span>{% trans "Overtime" %}</span>
-            </a>
-        </li>
-
-        <!-- App Version -->
-        <li class="nav-item {% if 'androidapprelease' in segment %}active{% endif %}">
-            <a href="{% url 'appversion:androidapprelease_list' %}" class="nav-link d-flex align-items-center px-3">
-                <i class="fas fa-mobile-alt me-2"></i>
-                <span>{% trans "App Version" %}</span>
+        <!-- complaint -->
+        <li class="nav-item {% if 'complaint' in segment %}active{% endif %}">
+            <a href="{% url 'complaint-box:complaint_list' %}" class="nav-link d-flex align-items-center px-3">
+                <i class="fas fa-file-alt me-2"></i>
+                <span>{% trans "Complaints" %}</span>
             </a>
         </li>
 

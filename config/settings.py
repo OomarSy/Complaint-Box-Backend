@@ -71,11 +71,8 @@ INSTALLED_APPS = [
     # Project Apps
     'apps.core',
     'apps.dashboard',
-    'apps.location',
-    'apps.attendance',
-    'apps.appversion',
     'apps.users',
-    'apps.overtime',
+    'apps.complaint_box',
 
     # UI & Forms Styling
     'crispy_forms',
