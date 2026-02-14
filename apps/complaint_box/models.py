@@ -29,16 +29,9 @@ class Complaint(models.Model):
         max_length=255,
         blank=True,
         null=True,
-        help_text="يجب ملؤه إذا كان السبب 'أخرى'"
     )
     
     description = models.TextField()
-
-    extra_data = models.JSONField(
-        blank=True,
-        null=True,
-        help_text="معلومات غير تعريفية مثل القسم أو الفرع"
-    )
 
     status = models.CharField(
         max_length=20,
