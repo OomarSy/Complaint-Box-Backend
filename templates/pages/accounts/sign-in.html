@@ -11,6 +11,9 @@
         background: rgba(255, 255, 255, 0.95); /* خلفية بيضاء ناصعة أو شفافة قليلاً */
         border-radius: 1.5rem;
         border: 1px solid rgba(170, 252, 184, 0.3);
+        padding: 2rem 1.5rem;
+        max-width: 400px; /* حد أقصى للعرض */
+        width: 100%;
     }
     .input-group-text {
         background-color: #f8f9fa;
@@ -24,7 +27,7 @@
         box-shadow: 0 0 0 0.2rem rgba(60, 122, 137, 0.25);
     }
     .btn-gray-800 {
-        background-color: #3C7A89; /* اللون البترولي من التصميم السابق */
+        background-color: #3C7A89; /* اللون البترولي */
         border-color: #3C7A89;
         color: white;
         font-weight: bold;
@@ -44,31 +47,45 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 0 auto 1.5rem auto;
+        margin: 0 auto 1rem auto;
         font-size: 1.5rem;
+    }
+
+    /* تحسين تجاوب النصوص على الشاشات الصغيرة */
+    @media (max-width: 576px) {
+        .card {
+            padding: 1.5rem 1rem;
+        }
+        h1.h3 {
+            font-size: 1.4rem;
+        }
+        .input-group-text {
+            font-size: 0.9rem;
+        }
+        .btn-gray-800 {
+            font-size: 0.95rem;
+        }
     }
 </style>
 
-<section class="vh-lg-100 d-flex align-items-center">
+<section class="vh-100 d-flex align-items-center justify-content-center">
   <div class="container">
     <div class="row justify-content-center">
       <div class="col-12 d-flex align-items-center justify-content-center">
-        
-        <div class="card shadow border-0 p-4 p-lg-5 w-100 fmxw-500 animate__animated animate__fadeIn">
-          
-        <!-- Brand -->
-        <div class="text-center text-md-center mb-0 mt-md-0">
-                <span class="sidebar-icon mb-2">
-                    <img src="{% static 'assets/img/brand/Compliant Box.png' %}" alt="Compliant Box Logo">
-                </span>
-        </div>
+
+        <div class="card shadow border-0 animate__animated animate__fadeIn">
+
+          <!-- Brand -->
+          <div class="text-center mb-4">
+            <img src="{% static 'assets/img/brand/Compliant Box.png' %}" alt="Compliant Box Logo" class="img-fluid" style="max-height: 80px;">
+          </div>
 
           <div class="text-center text-md-center mb-4 mt-md-0">
             <h1 class="mb-0 h3 fw-bold" style="color: #2E4756;">Welcome Back</h1>
             <p class="text-muted">Sign in to <strong>Complaint Box</strong></p>
           </div>
 
-          <form method="post" class="mt-4">
+          <form method="post">
             {% csrf_token %}
 
             {% if form.non_field_errors %}
@@ -79,11 +96,11 @@
               {% endfor %}
             {% endif %}
 
-            <div class="form-group mb-4">
+            <div class="form-group mb-3">
               <label for="username" class="fw-bold small text-uppercase" style="color: #3C7A89;">{{ form.username.label }}</label>
               <div class="input-group">
                 <span class="input-group-text">
-                  <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-6-3a2 2 0 11-4 0 2 2 0 014 0zm-2 4a5 5 0 00-4.546 2.916A5.986 5.986 0 0010 16a5.986 5.986 0 004.546-2.084A5 5 0 0010 11z" clip-rule="evenodd"></path>
                   </svg>
                 </span>
@@ -91,11 +108,11 @@
               </div>
             </div>
 
-            <div class="form-group mb-4">
+            <div class="form-group mb-3">
               <label for="password" class="fw-bold small text-uppercase" style="color: #3C7A89;">{{ form.password.label }}</label>
               <div class="input-group">
                 <span class="input-group-text">
-                  <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
                   </svg>
                 </span>
@@ -103,18 +120,19 @@
               </div>
             </div>
 
-            <div class="d-grid">
+            <div class="d-grid mt-3">
               <button type="submit" class="btn btn-gray-800 shadow-sm py-2">
-                Log In <i class="bi bi-arrow-right ms-2"></i>
+                تسجيل الدخول <i class="bi bi-arrow-right ms-2"></i>
               </button>
             </div>
           </form>
 
-          <div class="d-flex justify-content-center align-items-center mt-4">
-            <span class="fw-normal small">
-              Secure Access
+          <div class="text-center mt-3">
+            <span class="fw-normal small text-muted">
+              وصول آمن للوحة الشكاوى
             </span>
           </div>
+
         </div>
       </div>
     </div>
